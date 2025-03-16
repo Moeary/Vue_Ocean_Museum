@@ -158,7 +158,7 @@ export default {
         古埃及的商船主要用于尼罗河上的贸易往来，而军船则用于保护贸易路线。哈特谢普苏特女王时期（约公元前1479-1458年），埃及曾派出大型船队前往神秘的旁特国（可能位于今天的索马里或也门），带回香料、黄金、象牙和珍贵木材。这些贸易航线对古埃及经济和文化发展有着重要影响。`,
         detailImages: [
           {
-            url: '/images/ancient-egypt-ships.jpg',
+            url: '/images/ancient-egypt-ships-wall.jpg',
             caption: '古埃及船只壁画'
           },
           {
@@ -189,7 +189,7 @@ export default {
         腓尼基人主要通过贸易香料、紫色染料（又称"泰尔紫"，来自海洋软体动物，非常珍贵）、玻璃制品、香柏木和各类手工艺品而闻名于世。他们在地中海各地建立了众多殖民地和贸易站，其中最著名的是迦太基（位于现今突尼斯），后来发展成为地中海西部的主要海上强权。`,
         detailImages: [
           {
-            url: '/images/phoenician-ships.jpg',
+            url: '/images/phoenician-ships-fuyuan.jpg',
             caption: '腓尼基商船复原图'
           },
           {
@@ -217,7 +217,7 @@ export default {
         date: '公元前8世纪 - 公元前6世纪',
         title: '古希腊的航海与殖民',
         description: '古希腊人继承并发展了航海技术，积极进行海外殖民和贸易，对地中海历史产生了深远影响。',
-        image: '/images/ancient-greece-ships.jpg',
+        image: '/images/ancient-greece.jpg',
         color: '#2980B9',
         detailedDescription: `古希腊的航海活动在公元前8世纪至公元前6世纪进入繁荣时期。希腊人凭借其优越的地理位置和对航海技术的掌握，在地中海和黑海地区积极开展殖民活动和贸易往来。<br/><br/>
         古希腊人建造了坚固的桨帆船，例如三列桨座战船（Trireme），成为当时地中海地区重要的海军力量。他们不仅在地中海沿岸建立了众多城邦和殖民地，还将航线扩展到更远的地方，例如埃及、西西里岛、以及黑海沿岸。<br/><br/>
@@ -264,12 +264,12 @@ export default {
           },
           {
             url: '/images/roman-empire-trade-routes.jpg',
-            caption: '罗马帝国的 морские 贸易路线图'
+            caption: '罗马帝国的贸易路线图'
           }
         ],
         facts: [
-          '罗马帝国海军在地中海地区消灭了海盗，保障了 морские 贸易的安全',
-          '罗马人修建了发达的 морские 道路和灯塔，例如著名的亚历山大灯塔',
+          '罗马帝国海军在地中海地区消灭了海盗，保障了贸易的安全',
+          '罗马人修建了发达的道路和灯塔，例如著名的亚历山大灯塔',
           '地中海在罗马帝国时期被称为 "Mare Nostrum" (我们的海)'
         ]
       }),
