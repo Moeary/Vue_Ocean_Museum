@@ -68,9 +68,9 @@ export default defineComponent({
     const navItems = [
       { id: 'banner', text: '首页', route: '/' },
       { id: 'intro', text: '关于', route: '/intro' }, // Updated to link directly to the intro page
-      // Removed the "功能" (Features) button
       { id: 'timeline', text: '历史时间线' },
-      { id: 'knowledge', text: '知识库', route: '/knowledge' }
+      { id: 'knowledge', text: '知识库', route: '/knowledge' },
+      { id: 'marinelife', text: '海洋生物', route: '/marine-life' }
     ];
     
     // Use props to check if the current section matches a navigation item
