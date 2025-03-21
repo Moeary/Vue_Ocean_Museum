@@ -48,36 +48,6 @@
       </el-row>
     </section>
     
-    <!-- 功能导航 - Now hidden since we removed the nav button -->
-    <!-- <section id="features" class="section features-section" ref="featuresSection">
-      <el-row :gutter="20">
-        <el-col :span="24">
-          <div class="section-title">
-            <h2>探索功能</h2>
-            <div class="title-underline"></div>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20" class="features-list">
-        <el-col :md="8" :sm="24" v-for="feature in features" :key="feature.title">
-          <el-card class="feature-card">
-            <div class="feature-icon">
-              <el-icon :size="40"><component :is="feature.icon"></component></el-icon>
-            </div>
-            <h3>{{ feature.title }}</h3>
-            <p>{{ feature.description }}</p>
-            <el-button 
-              link 
-              type="primary" 
-              @click="feature.type === 'section' ? scrollToSection(feature.link) : navigateTo(feature.link)"
-            >
-              开始体验 <el-icon><ArrowRight /></el-icon>
-            </el-button>
-          </el-card>
-        </el-col>
-      </el-row>
-    </section> -->
-    
     <!-- 时间线部分 -->
     <section id="timeline" class="section timeline-section" ref="timelineSection">
       <el-row :gutter="20">

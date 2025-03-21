@@ -6,7 +6,7 @@
       <div class="logo-container">
         <router-link to="/" class="logo">
           <img src="/images/logo.png" alt="海洋文史馆" class="logo-img" onerror="this.src='https://via.placeholder.com/40x40?text=O'"/>
-          <span class="logo-text">海洋文博馆</span>
+          <span class="logo-text">虚拟海洋文史馆</span>
         </router-link>
       </div>
       
@@ -67,10 +67,10 @@ export default defineComponent({
     
     const navItems = [
       { id: 'banner', text: '首页', route: '/' },
-      { id: 'intro', text: '关于', route: '/intro' }, // Updated to link directly to the intro page
       { id: 'timeline', text: '历史时间线' },
       { id: 'knowledge', text: '知识库', route: '/knowledge' },
-      { id: 'marinelife', text: '海洋生物', route: '/marine-life' }
+      { id: 'marinelife', text: '海洋生物', route: '/marine-life' },
+      { id: 'intro', text: '关于', route: '/intro' }
     ];
     
     // Use props to check if the current section matches a navigation item
