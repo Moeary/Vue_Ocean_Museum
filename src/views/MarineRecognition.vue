@@ -112,7 +112,13 @@ export default defineComponent({
     };
     
     // Initialize Google Generative AI with proper environment variable access
-    const genAI = new GoogleGenerativeAI(process.env.VUE_APP_GEMINI_API_KEY);
+    const apiKey = process.env.VUE_APP_GEMINI_API_KEY;
+    
+    if (!apiKey) {
+      console.error('Gemini API key not found! Please check your environment variables.');
+    }
+    
+    const genAI = new GoogleGenerativeAI(apiKey);
     
     // 检查文件类型和大小
     const beforeUpload = (file) => {
