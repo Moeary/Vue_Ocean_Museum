@@ -4,6 +4,7 @@ import KnowledgeBase from '../views/KnowledgeBase.vue';
 import TimelinePage from '../views/TimelinePage.vue';
 import IntroPage from '../views/IntroPage.vue';
 import MarineLifeGallery from '../views/MarineLifeGallery.vue';
+import MarineRecognition from '../views/MarineRecognition.vue';
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/marine-life',
     name: 'MarineLifeGallery',
     component: MarineLifeGallery
+  },
+  {
+    path: '/recognition',
+    name: 'MarineRecognition',
+    component: MarineRecognition
   }
 ];
 

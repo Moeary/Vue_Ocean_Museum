@@ -70,6 +70,7 @@ export default defineComponent({
       { id: 'timeline', text: '历史时间线' },
       { id: 'knowledge', text: '知识库', route: '/knowledge' },
       { id: 'marinelife', text: '海洋生物', route: '/marine-life' },
+      { id: 'recognition', text: '生物识别', route: '/recognition' },
       { id: 'intro', text: '关于', route: '/intro' }
     ];
     
