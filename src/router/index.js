@@ -5,6 +5,8 @@ import TimelinePage from '../views/TimelinePage.vue';
 import IntroPage from '../views/IntroPage.vue';
 import MarineLifeGallery from '../views/MarineLifeGallery.vue';
 import MarineRecognition from '../views/MarineRecognition.vue';
+import ThreeDPage from '../views/ThreeDPage.vue';
+import VRPage from '../views/VRPage.vue';
 
 const routes = [
   {
@@ -36,6 +38,16 @@ const routes = [
     path: '/recognition',
     name: 'MarineRecognition',
     component: MarineRecognition
+  },
+  {
+    path: '/3d',
+    name: 'ThreeDPage',
+    component: ThreeDPage
+  },
+  {
+    path: '/vr',
+    name: 'VRPage',
+    component: VRPage
   }
 ];
 
