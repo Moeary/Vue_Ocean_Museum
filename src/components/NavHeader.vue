@@ -71,6 +71,8 @@ export default defineComponent({
       { id: 'knowledge', text: '知识库', route: '/knowledge' },
       { id: 'marinelife', text: '海洋生物', route: '/marine-life' },
       { id: 'recognition', text: '生物识别', route: '/recognition' },
+      { id: '3d', text: '进入 3D 展馆', route: '/3d' },
+      { id: 'vr', text: '进入 VR 模式', route: '/vr' },
       { id: 'intro', text: '关于', route: '/intro' }
     ];
     
