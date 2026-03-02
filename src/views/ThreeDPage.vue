@@ -2,7 +2,7 @@
   <section class="three-d-page">
     <div class="page-header">
       <h1>3D 展馆浏览</h1>
-      <p>PC 支持鼠标锁定 + W/A/S/D 移动，手机支持单指旋转视角。</p>
+      <p>PC 支持鼠标锁定 + W/A/S/D 移动与一键全屏，手机支持单指旋转视角。</p>
     </div>
     <div class="scene-wrapper">
       <OceanScene mode="walk" model-url="/models/museum.glb" />

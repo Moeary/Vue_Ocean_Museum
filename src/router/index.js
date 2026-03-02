@@ -1,12 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Home from '../views/Home.vue';
-import KnowledgeBase from '../views/KnowledgeBase.vue';
-import TimelinePage from '../views/TimelinePage.vue';
-import IntroPage from '../views/IntroPage.vue';
-import MarineLifeGallery from '../views/MarineLifeGallery.vue';
-import MarineRecognition from '../views/MarineRecognition.vue';
-import ThreeDPage from '../views/ThreeDPage.vue';
-import VRPage from '../views/VRPage.vue';
 
 const routes = [
   {
@@ -17,37 +10,37 @@ const routes = [
   {
     path: '/knowledge',
     name: 'KnowledgeBase',
-    component: KnowledgeBase
+    component: () => import('../views/KnowledgeBase.vue')
   },
   {
     path: '/timeline',
     name: 'Timeline',
-    component: TimelinePage
+    component: () => import('../views/TimelinePage.vue')
   },
   {
     path: '/intro',
     name: 'Introduction',
-    component: IntroPage
+    component: () => import('../views/IntroPage.vue')
   },
   {
     path: '/marine-life',
     name: 'MarineLifeGallery',
-    component: MarineLifeGallery
+    component: () => import('../views/MarineLifeGallery.vue')
   },
   {
     path: '/recognition',
     name: 'MarineRecognition',
-    component: MarineRecognition
+    component: () => import('../views/MarineRecognition.vue')
   },
   {
     path: '/3d',
     name: 'ThreeDPage',
-    component: ThreeDPage
+    component: () => import('../views/ThreeDPage.vue')
   },
   {
     path: '/vr',
     name: 'VRPage',
-    component: VRPage
+    component: () => import('../views/VRPage.vue')
   }
 ];
 

@@ -147,12 +147,12 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { Fish, MapLocation, Monitor, DataLine, Collection } from '@element-plus/icons-vue';
+import { Ship, MapLocation, Monitor, DataLine, Collection } from '@element-plus/icons-vue';
 
 export default {
   name: 'KnowledgeBase',
   components: {
-    Fish,
+    Ship,
     MapLocation,
     Monitor,
     DataLine,
@@ -163,7 +163,7 @@ export default {
     const activeCategory = ref('marine-biology');
     
     const categories = [
-      { id: 'marine-biology', name: '海洋生物学', icon: 'Fish' },
+      { id: 'marine-biology', name: '海洋生物学', icon: 'Ship' },
       { id: 'oceanography', name: '海洋学', icon: 'DataLine' },
       { id: 'marine-technology', name: '海洋技术', icon: 'Monitor' },
       { id: 'conservation', name: '海洋保护', icon: 'MapLocation' },

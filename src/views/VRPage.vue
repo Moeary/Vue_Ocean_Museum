@@ -2,7 +2,7 @@
   <section class="vr-page">
     <div class="page-header">
       <h1>VR 沉浸模式</h1>
-      <p>Quest 3 中点击控制器可传送到地面目标点。</p>
+      <p>Quest 3 中使用任意手柄摇杆移动（双手手柄均可）。</p>
     </div>
     <div class="scene-wrapper">
       <OceanScene mode="vr" model-url="/models/museum.glb" />
