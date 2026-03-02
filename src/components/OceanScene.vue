@@ -7,7 +7,7 @@
       <p>按 F 可切换全屏</p>
     </div>
     <div v-if="mode === 'vr'" class="hint-panel">
-      <p>VR：使用任意手柄摇杆移动</p>
+      <p>VR：左手摇杆移动，右手摇杆转向</p>
     </div>
     <button
       v-if="showFullscreenButton"
@@ -60,6 +60,7 @@ export default defineComponent({
     let vrSession = null;
     let vrBaseReferenceSpace = null;
     let vrOffset = new THREE.Vector3();
+    let vrYawOffset = 0;
     let onXRSessionStart;
     let onXRSessionEnd;
     let onControllerConnected;
@@ -90,6 +91,8 @@ export default defineComponent({
     const forwardVector = new THREE.Vector3();
     const rightVector = new THREE.Vector3();
     const moveVector = new THREE.Vector3();
+    const yawQuaternion = new THREE.Quaternion();
+    const inverseYawQuaternion = new THREE.Quaternion();
     const vrInputAxes = {
       left: { x: 0, y: 0 },
       right: { x: 0, y: 0 }
@@ -323,11 +326,13 @@ export default defineComponent({
         vrSession = renderer.xr.getSession() || null;
         vrBaseReferenceSpace = renderer.xr.getReferenceSpace() || null;
         vrOffset.set(0, 0, 0);
+        vrYawOffset = 0;
       };
       onXRSessionEnd = () => {
         vrSession = null;
         vrBaseReferenceSpace = null;
         vrOffset.set(0, 0, 0);
+        vrYawOffset = 0;
       };
       renderer.xr.addEventListener('sessionstart', onXRSessionStart);
       renderer.xr.addEventListener('sessionend', onXRSessionEnd);
@@ -346,6 +351,7 @@ export default defineComponent({
         vrSession = null;
         vrBaseReferenceSpace = null;
         vrOffset.set(0, 0, 0);
+        vrYawOffset = 0;
       };
     };
 
@@ -393,8 +399,8 @@ export default defineComponent({
         return;
       }
 
-      let moveX = 0;
-      let moveY = 0;
+      let fallbackMoveX = 0;
+      let fallbackMoveY = 0;
       for (const source of vrSession.inputSources) {
         const gamepad = source?.gamepad;
         if (!gamepad || !gamepad.axes) {
@@ -409,16 +415,23 @@ export default defineComponent({
           vrInputAxes.right.x = axes.x;
           vrInputAxes.right.y = axes.y;
         } else {
-          moveX += axes.x;
-          moveY += axes.y;
+          fallbackMoveX += axes.x;
+          fallbackMoveY += axes.y;
         }
       }
 
-      moveX += vrInputAxes.left.x + vrInputAxes.right.x;
-      moveY += vrInputAxes.left.y + vrInputAxes.right.y;
+      let moveX = vrInputAxes.left.x;
+      let moveY = vrInputAxes.left.y;
+      let turnX = vrInputAxes.right.x;
+
+      if (!moveX && !moveY && !turnX) {
+        moveX = fallbackMoveX;
+        moveY = fallbackMoveY;
+      }
 
       moveX = THREE.MathUtils.clamp(moveX, -1, 1);
       moveY = THREE.MathUtils.clamp(moveY, -1, 1);
+      turnX = THREE.MathUtils.clamp(turnX, -1, 1);
 
       const deadZone = 0.1;
       if (Math.abs(moveX) < deadZone) {
@@ -427,9 +440,13 @@ export default defineComponent({
       if (Math.abs(moveY) < deadZone) {
         moveY = 0;
       }
+      if (Math.abs(turnX) < deadZone) {
+        turnX = 0;
+      }
 
-      if (!moveX && !moveY) {
-        return;
+      if (turnX) {
+        const turnSpeed = 1.8;
+        vrYawOffset -= turnX * turnSpeed * delta;
       }
 
       const xrCamera = renderer.xr.getCamera(camera);
@@ -450,13 +467,23 @@ export default defineComponent({
         moveVector.normalize();
       }
 
-      const speed = 3.2;
-      vrOffset.addScaledVector(moveVector, speed * delta);
+      if (moveX || moveY) {
+        const speed = 3.2;
+        vrOffset.addScaledVector(moveVector, speed * delta);
+      }
+
+      yawQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), vrYawOffset);
+      inverseYawQuaternion.copy(yawQuaternion).invert();
 
       const xrTransform = new XRRigidTransform({
         x: -vrOffset.x,
         y: 0,
         z: -vrOffset.z
+      }, {
+        x: inverseYawQuaternion.x,
+        y: inverseYawQuaternion.y,
+        z: inverseYawQuaternion.z,
+        w: inverseYawQuaternion.w
       });
 
       renderer.xr.setReferenceSpace(vrBaseReferenceSpace.getOffsetReferenceSpace(xrTransform));
