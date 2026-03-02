@@ -110,20 +110,6 @@ export default defineComponent({
 
       const hemisphereLight = new THREE.HemisphereLight(0xb4e4ff, 0x1f2b3a, 0.5);
       scene.add(hemisphereLight);
-
-      floorMesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(300, 300),
-        new THREE.MeshStandardMaterial({
-          color: 0x12314d,
-          roughness: 1,
-          metalness: 0
-        })
-      );
-      floorMesh.rotation.x = -Math.PI / 2;
-      floorMesh.position.y = 0;
-      floorMesh.receiveShadow = true;
-      floorMesh.name = 'teleportable-ground';
-      scene.add(floorMesh);
     };
 
     const loadMuseumModel = () => {
