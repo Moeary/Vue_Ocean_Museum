@@ -54,11 +54,16 @@ export default defineComponent({
     let renderer;
     let clock;
     let pointerLockControls;
-    let playerRig;
+    let vrController0;
+    let vrController1;
     let vrButtonElement;
     let vrSession = null;
+    let vrBaseReferenceSpace = null;
+    let vrOffset = new THREE.Vector3();
     let onXRSessionStart;
     let onXRSessionEnd;
+    let onControllerConnected;
+    let onControllerDisconnected;
     let onRendererClick;
     let onPointerLockError;
     let onPointerLockChange;
@@ -85,6 +90,10 @@ export default defineComponent({
     const forwardVector = new THREE.Vector3();
     const rightVector = new THREE.Vector3();
     const moveVector = new THREE.Vector3();
+    const vrInputAxes = {
+      left: { x: 0, y: 0 },
+      right: { x: 0, y: 0 }
+    };
 
     const onWindowResize = () => {
       if (!sceneContainer.value || !camera || !renderer) {
@@ -112,6 +121,9 @@ export default defineComponent({
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.shadowMap.enabled = props.mode !== 'walk';
       renderer.xr.enabled = props.mode === 'vr';
+      if (props.mode === 'vr') {
+        renderer.xr.setReferenceSpaceType('local-floor');
+      }
 
       if (sceneContainer.value) {
         sceneContainer.value.appendChild(renderer.domElement);
@@ -269,29 +281,71 @@ export default defineComponent({
     };
 
     const setupVRMode = () => {
-      playerRig = new THREE.Group();
-      playerRig.position.copy(camera.position);
-      playerRig.add(camera);
-      scene.add(playerRig);
-
       vrButtonElement = VRButton.createButton(renderer);
       if (sceneContainer.value) {
         sceneContainer.value.appendChild(vrButtonElement);
       }
 
+      vrController0 = renderer.xr.getController(0);
+      vrController1 = renderer.xr.getController(1);
+
+      onControllerConnected = (event) => {
+        const handedness = event?.data?.handedness || 'none';
+        const gamepad = event?.data?.gamepad;
+        if (!gamepad) {
+          return;
+        }
+
+        if (handedness === 'left') {
+          vrInputAxes.left.x = 0;
+          vrInputAxes.left.y = 0;
+        } else if (handedness === 'right') {
+          vrInputAxes.right.x = 0;
+          vrInputAxes.right.y = 0;
+        }
+      };
+
+      onControllerDisconnected = () => {
+        vrInputAxes.left.x = 0;
+        vrInputAxes.left.y = 0;
+        vrInputAxes.right.x = 0;
+        vrInputAxes.right.y = 0;
+      };
+
+      vrController0.addEventListener('connected', onControllerConnected);
+      vrController0.addEventListener('disconnected', onControllerDisconnected);
+      vrController1.addEventListener('connected', onControllerConnected);
+      vrController1.addEventListener('disconnected', onControllerDisconnected);
+      scene.add(vrController0);
+      scene.add(vrController1);
+
       onXRSessionStart = () => {
         vrSession = renderer.xr.getSession() || null;
+        vrBaseReferenceSpace = renderer.xr.getReferenceSpace() || null;
+        vrOffset.set(0, 0, 0);
       };
       onXRSessionEnd = () => {
         vrSession = null;
+        vrBaseReferenceSpace = null;
+        vrOffset.set(0, 0, 0);
       };
       renderer.xr.addEventListener('sessionstart', onXRSessionStart);
       renderer.xr.addEventListener('sessionend', onXRSessionEnd);
 
       return () => {
+        if (vrController0) {
+          vrController0.removeEventListener('connected', onControllerConnected);
+          vrController0.removeEventListener('disconnected', onControllerDisconnected);
+        }
+        if (vrController1) {
+          vrController1.removeEventListener('connected', onControllerConnected);
+          vrController1.removeEventListener('disconnected', onControllerDisconnected);
+        }
         renderer.xr.removeEventListener('sessionstart', onXRSessionStart);
         renderer.xr.removeEventListener('sessionend', onXRSessionEnd);
         vrSession = null;
+        vrBaseReferenceSpace = null;
+        vrOffset.set(0, 0, 0);
       };
     };
 
@@ -335,7 +389,7 @@ export default defineComponent({
     };
 
     const moveInVRMode = (delta) => {
-      if (!playerRig || !renderer.xr.isPresenting || !vrSession) {
+      if (!renderer.xr.isPresenting || !vrSession || !vrBaseReferenceSpace) {
         return;
       }
 
@@ -348,14 +402,25 @@ export default defineComponent({
         }
 
         const axes = getSourceAxes(gamepad.axes);
-        moveX += axes.x;
-        moveY += axes.y;
+        if (source.handedness === 'left') {
+          vrInputAxes.left.x = axes.x;
+          vrInputAxes.left.y = axes.y;
+        } else if (source.handedness === 'right') {
+          vrInputAxes.right.x = axes.x;
+          vrInputAxes.right.y = axes.y;
+        } else {
+          moveX += axes.x;
+          moveY += axes.y;
+        }
       }
+
+      moveX += vrInputAxes.left.x + vrInputAxes.right.x;
+      moveY += vrInputAxes.left.y + vrInputAxes.right.y;
 
       moveX = THREE.MathUtils.clamp(moveX, -1, 1);
       moveY = THREE.MathUtils.clamp(moveY, -1, 1);
 
-      const deadZone = 0.14;
+      const deadZone = 0.1;
       if (Math.abs(moveX) < deadZone) {
         moveX = 0;
       }
@@ -386,8 +451,15 @@ export default defineComponent({
       }
 
       const speed = 3.2;
-      playerRig.position.addScaledVector(moveVector, speed * delta);
-      playerRig.position.y = 1.7;
+      vrOffset.addScaledVector(moveVector, speed * delta);
+
+      const xrTransform = new XRRigidTransform({
+        x: -vrOffset.x,
+        y: 0,
+        z: -vrOffset.z
+      });
+
+      renderer.xr.setReferenceSpace(vrBaseReferenceSpace.getOffsetReferenceSpace(xrTransform));
     };
 
     const toggleFullscreen = async () => {
