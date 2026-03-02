@@ -59,8 +59,8 @@ export default defineComponent({
     let vrButtonElement;
     let vrSession = null;
     let vrBaseReferenceSpace = null;
-    let vrOffset = new THREE.Vector3();
-    let vrYawOffset = 0;
+    const vrPlayerPosition = new THREE.Vector3(0, 0, 0);
+    let vrPlayerYaw = 0;
     let onXRSessionStart;
     let onXRSessionEnd;
     let onControllerConnected;
@@ -91,8 +91,12 @@ export default defineComponent({
     const forwardVector = new THREE.Vector3();
     const rightVector = new THREE.Vector3();
     const moveVector = new THREE.Vector3();
-    const yawQuaternion = new THREE.Quaternion();
-    const inverseYawQuaternion = new THREE.Quaternion();
+    const playerQuaternion = new THREE.Quaternion();
+    const playerMatrix = new THREE.Matrix4();
+    const inversePlayerMatrix = new THREE.Matrix4();
+    const inversePlayerPosition = new THREE.Vector3();
+    const inversePlayerQuaternion = new THREE.Quaternion();
+    const inversePlayerScale = new THREE.Vector3();
     const vrInputAxes = {
       left: { x: 0, y: 0 },
       right: { x: 0, y: 0 }
@@ -325,14 +329,15 @@ export default defineComponent({
       onXRSessionStart = () => {
         vrSession = renderer.xr.getSession() || null;
         vrBaseReferenceSpace = renderer.xr.getReferenceSpace() || null;
-        vrOffset.set(0, 0, 0);
-        vrYawOffset = 0;
+        vrPlayerPosition.set(0, 0, 0);
+        vrPlayerYaw = 0;
+        updateVRReferenceSpace();
       };
       onXRSessionEnd = () => {
         vrSession = null;
         vrBaseReferenceSpace = null;
-        vrOffset.set(0, 0, 0);
-        vrYawOffset = 0;
+        vrPlayerPosition.set(0, 0, 0);
+        vrPlayerYaw = 0;
       };
       renderer.xr.addEventListener('sessionstart', onXRSessionStart);
       renderer.xr.addEventListener('sessionend', onXRSessionEnd);
@@ -350,8 +355,8 @@ export default defineComponent({
         renderer.xr.removeEventListener('sessionend', onXRSessionEnd);
         vrSession = null;
         vrBaseReferenceSpace = null;
-        vrOffset.set(0, 0, 0);
-        vrYawOffset = 0;
+        vrPlayerPosition.set(0, 0, 0);
+        vrPlayerYaw = 0;
       };
     };
 
@@ -392,6 +397,33 @@ export default defineComponent({
         x: axes[0] ?? 0,
         y: axes[1] ?? 0
       };
+    };
+
+    const updateVRReferenceSpace = () => {
+      if (!renderer || !vrBaseReferenceSpace) {
+        return;
+      }
+
+      playerQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), vrPlayerYaw);
+      playerMatrix.compose(vrPlayerPosition, playerQuaternion, new THREE.Vector3(1, 1, 1));
+      inversePlayerMatrix.copy(playerMatrix).invert();
+      inversePlayerMatrix.decompose(inversePlayerPosition, inversePlayerQuaternion, inversePlayerScale);
+
+      const xrTransform = new XRRigidTransform(
+        {
+          x: inversePlayerPosition.x,
+          y: inversePlayerPosition.y,
+          z: inversePlayerPosition.z
+        },
+        {
+          x: inversePlayerQuaternion.x,
+          y: inversePlayerQuaternion.y,
+          z: inversePlayerQuaternion.z,
+          w: inversePlayerQuaternion.w
+        }
+      );
+
+      renderer.xr.setReferenceSpace(vrBaseReferenceSpace.getOffsetReferenceSpace(xrTransform));
     };
 
     const moveInVRMode = (delta) => {
@@ -445,8 +477,8 @@ export default defineComponent({
       }
 
       if (turnX) {
-        const turnSpeed = 1.8;
-        vrYawOffset -= turnX * turnSpeed * delta;
+        const turnSpeed = 1.3;
+        vrPlayerYaw -= turnX * turnSpeed * delta;
       }
 
       const xrCamera = renderer.xr.getCamera(camera);
@@ -469,24 +501,10 @@ export default defineComponent({
 
       if (moveX || moveY) {
         const speed = 3.2;
-        vrOffset.addScaledVector(moveVector, speed * delta);
+        vrPlayerPosition.addScaledVector(moveVector, speed * delta);
       }
 
-      yawQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), vrYawOffset);
-      inverseYawQuaternion.copy(yawQuaternion).invert();
-
-      const xrTransform = new XRRigidTransform({
-        x: -vrOffset.x,
-        y: 0,
-        z: -vrOffset.z
-      }, {
-        x: inverseYawQuaternion.x,
-        y: inverseYawQuaternion.y,
-        z: inverseYawQuaternion.z,
-        w: inverseYawQuaternion.w
-      });
-
-      renderer.xr.setReferenceSpace(vrBaseReferenceSpace.getOffsetReferenceSpace(xrTransform));
+      updateVRReferenceSpace();
     };
 
     const toggleFullscreen = async () => {
