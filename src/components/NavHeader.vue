@@ -5,8 +5,8 @@
       <!-- Logo区域 -->
       <div class="logo-container">
         <router-link to="/" class="logo">
-          <img src="/images/logo.png" alt="海洋文史馆" class="logo-img" onerror="this.src='https://via.placeholder.com/40x40?text=O'"/>
-          <span class="logo-text">虚拟海洋文史馆</span>
+          <img src="/images/logo.png" alt="海洋文博馆" class="logo-img" onerror="this.src='https://via.placeholder.com/40x40?text=O'"/>
+          <span class="logo-text">虚拟海洋文博馆</span>
         </router-link>
       </div>
       

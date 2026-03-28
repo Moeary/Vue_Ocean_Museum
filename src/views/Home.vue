@@ -19,7 +19,7 @@
       <el-row :gutter="20">
         <el-col :span="24">
           <div class="section-title">
-            <h2>关于海洋文史馆</h2>
+            <h2>关于海洋文博馆</h2>
             <div class="title-underline"></div>
           </div>
         </el-col>
@@ -27,7 +27,7 @@
       <el-row :gutter="20" class="intro-content">
         <el-col :md="12" :sm="24">
           <div class="intro-text">
-            <p>欢迎来到虚拟海洋文史馆，这是一个致力于展示人类与海洋交互历史的数字平台。</p>
+            <p>欢迎来到虚拟海洋文博馆，这是一个致力于展示人类与海洋交互历史的数字平台。</p>
             <p>从古代文明的早期航海探索到现代深海科技的突破，我们记录了那些改变世界的海洋大事件。通过交互式时间线，您可以按时间顺序了解人类海洋文明的发展历程。</p>
             <p>海洋覆盖了地球表面的71%，自古以来就是人类交流、贸易、探索和科学发现的场所。我们希望通过这个虚拟展馆，让更多人了解海洋对人类历史的重要影响，以及我们保护海洋环境的责任。</p>
             <el-button type="primary" @click="scrollToSection('timeline')">开始探索</el-button>

@@ -12,7 +12,7 @@
     
     <!-- 页脚 -->
     <el-footer class="app-footer">
-      <p>© {{ new Date().getFullYear() }} 虚拟海洋文史馆 - 探索海洋历史的数字平台</p>
+      <p>© {{ new Date().getFullYear() }} 虚拟海洋文博馆 - 探索海洋历史的数字平台</p>
       <p>本网站仅供学习和教育目的使用</p>
     </el-footer>
   </div>
