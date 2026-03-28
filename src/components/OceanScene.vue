@@ -168,26 +168,8 @@ export default defineComponent({
           scene.add(model);
         },
         undefined,
-        () => {
-          if (props.modelUrl !== '/models/鲸鱼馆大厅.glb') {
-            loader.load(
-              '/models/鲸鱼馆大厅.glb',
-              (gltf) => {
-                const fallbackModel = gltf.scene;
-                fallbackModel.traverse((obj) => {
-                  if (obj.isMesh) {
-                    obj.castShadow = props.mode !== 'walk';
-                    obj.receiveShadow = props.mode !== 'walk';
-                  }
-                });
-                scene.add(fallbackModel);
-              },
-              undefined,
-              (error) => {
-                console.error('模型加载失败：', error);
-              }
-            );
-          }
+        (error) => {
+          console.error(`模型加载失败：${props.modelUrl}`, error);
         }
       );
     };
@@ -195,7 +177,7 @@ export default defineComponent({
     const setupWalkMode = () => {
       pointerLockControls = new PointerLockControls(camera, renderer.domElement);
       pointerLockControls.pointerSpeed = 0.85;
-      scene.add(pointerLockControls.getObject());
+      scene.add(pointerLockControls.object);
 
       onRendererClick = () => {
         pointerLockFailed.value = false;
@@ -380,7 +362,7 @@ export default defineComponent({
         pointerLockControls.moveRight(moveSpeed * delta);
       }
 
-      const currentPosition = pointerLockControls.getObject().position;
+      const currentPosition = pointerLockControls.object.position;
       currentPosition.y = 1.7;
     };
 
